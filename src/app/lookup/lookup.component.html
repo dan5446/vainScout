@@ -1,0 +1,3 @@
+<form #f="ngForm" (ngSubmit)="onSubmit()">
+    <input type="text" maxlength="120" [(ngModel)]="playerName" placeholder="Player Name" (change)="change($event)" name="player" autocomplete="off">
+</form>

@@ -1,0 +1,14 @@
+<div *ngIf="api.playerStats | async">
+
+    <div class="flex-col">
+        <div class="flex-item"><h2>{{ (api.playerStats | async)?.attributes.name }}</h2></div>
+        <div class="flex-item">STREAK: 
+            <span *ngIf="(api.playerStats | async)?.attributes.stats.lossStreak">-{{ (api.playerStats | async)?.attributes.stats.lossStreak }}</span>
+            <span *ngIf="(api.playerStats | async)?.attributes.stats.winStreak">+{{ (api.playerStats | async)?.attributes.stats.winStreak }}</span>
+        </div>
+        <div class="flex-item">WIN RATE: {{ ((api.playerStats | async)?.attributes.stats.wins / (api.playerStats | async)?.attributes.stats.played * 100).toFixed(2) }}%</div>
+        <div class="flex-item">MAINS: <span *ngFor="let hero of commonHeroes"><img style="zoom: 35%;" src="{{ hero }}" alt=""> </span></div>
+        <div class="flex-item">{{_matches | async | json}}</div>
+    </div>
+
+</div>

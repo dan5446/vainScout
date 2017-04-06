@@ -27,3 +27,29 @@ h2 {
     -webkit-font-smoothing: antialiased;
     margin-bottom: 10px;
 }
+
+.recent-matches li {
+    list-style: none;
+}
+
+img {
+    width: auto;
+    height: auto;
+    max-width: 55px;
+    max-height: 55px;
+    border-radius: 50%;
+}
+
+.lookup-message {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.lookup-message > span {
+    margin-top: 10px;
+    border: 1px solid rgba(0,0,0,0.2);
+    padding: 10px;
+    background-color: rgba(0,0,0,0.03);
+    border-radius: 7px;
+}

@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
-import { DiagnosticsStore } from './diagnostics/diagnostics-store.service';
 import { Observable } from 'rxjs/Observable';
-import { ApiStoreService } from './api-store.service';
+import { ApiStoreService } from './api/api-store.service';
 import { AngularFire, FirebaseListObservable } from 'angularfire2';
 
 declare var require: any;
@@ -12,19 +11,11 @@ declare var require: any;
 })
 export class AppComponent {
     title = 'vainScout';
-    private diagnostics: Observable<string[]>;
     private playerStats: any;
     image: string;
     private loggedIn: boolean;
 
-    constructor(diagnostics: DiagnosticsStore, private api: ApiStoreService, private af: AngularFire) {
-        this.diagnostics = diagnostics.diagnostics;
-        // this.loggedIn = this.af.auth
-        // const firebase = require('firebase');
-        // const images = firebase.app().storage().ref().child('images');
-        // const G7 = images.child('7Gold.png');
-        // console.dir(G7.getDownloadURL().then(url => this.image = url));
-    }
+    constructor(private api: ApiStoreService, public af: AngularFire) { }
 
     ngOnInit() {
         this.api.playerStats.subscribe(data => this.playerStats = data)

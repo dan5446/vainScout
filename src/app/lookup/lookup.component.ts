@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { DiagnosticsStore } from '../diagnostics/diagnostics-store.service';
-import { ApiStoreService } from '../api-store.service';
+import { ApiStoreService } from '../api/api-store.service';
+import { FirebaseService } from '../firebase/firebase.service';
+import { FirebaseStore } from '../firebase/firebase.store.service';
+
 
 @Component({
     selector: 'vg-lookup',
@@ -9,18 +11,25 @@ import { ApiStoreService } from '../api-store.service';
 })
 export class LookupComponent implements OnInit {
 
-    private playerName = '';
+    region = 'na';
+    playerName: string;
 
-    constructor(private diagnostics: DiagnosticsStore, private api: ApiStoreService) { }
+    constructor(private api: ApiStoreService, private db: FirebaseService, private data: FirebaseStore) { }
 
     ngOnInit() {}
 
-    private change(event: any) {
-        this.diagnostics.diagnostic = [event.target.value];
+    onSubmit() {
+        this.db.region = this.region;
+        this.db.player = this.playerName;
+        this.api.region = this.region;
+        this.api.player = this.playerName;
+        this.data.region = this.region;
+        this.data.playerName = this.playerName;
+        this.data.fetchPlayerData();
     }
 
-    onSubmit() {
-        this.api.player = this.playerName;
+    changed(event: any) {
+        console.log(event);
     }
 
 }

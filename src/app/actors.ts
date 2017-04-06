@@ -2,157 +2,177 @@ const Names: Array<{name: string, serverName: string, url: string}> = [
     {
         'name': 'Adagio',
         'serverName': '*Adagio*',
-        'url': ''
+        'url': 'assets/images/AdagioCircle.png'
     },
     {
         'name': 'Alpha',
         'serverName': '*Alpha*',
-        'url': ''
+        'url': 'assets/images/AlphaCircle.png'
     },
     {
         'name': 'Ardan',
         'serverName': '*Ardan*'
-        , 'url': ''
+        , 'url': 'assets/images/ArdanCircle.png'
     },
     {
         'name': 'Baron',
         'serverName': '*Baron*'
-        , 'url': ''
+        , 'url': 'assets/images/BaronCircle.png'
     },
     {
         'name': 'Blackfeather',
         'serverName': '*Blackfeather*'
-        , 'url': ''
+        , 'url': 'assets/images/BlackfeatherCircle.png'
     },
     {
         'name': 'Catherine',
         'serverName': '*Catherine*',
-        'url': ''
+        'url': 'assets/images/CatherineCircle.png'
     },
     {
         'name': 'Celeste',
         'serverName': '*Celeste*'
-        , 'url': ''
+        , 'url': 'assets/images/CelesteCircle.png'
     },
     {
         'name': 'Flicker',
         'serverName': '*Flicker*'
-        , 'url': ''
+        , 'url': 'assets/images/FlickerCircle.png'
     },
     {
         'name': 'Fortress',
         'serverName': '*Fortress*'
-        , 'url': ''
+        , 'url': 'assets/images/FortressCircle.png'
     },
     {
         'name': 'Glaive',
         'serverName': '*Glaive*'
-        , 'url': ''
+        , 'url': 'assets/images/GlaiveCircle.png'
     },
     {
         'name': 'Grumpjaw',
         'serverName': '*Grumpjaw*'
-        , 'url': ''
+        , 'url': 'assets/images/GrumpjawCircle.png'
     },
     {
         'name': 'Gwen',
         'serverName': '*Gwen*'
-        , 'url': ''
+        , 'url': 'assets/images/GwenCircle.png'
     },
     {
         'name': 'Krul',
         'serverName': '*Hero009*'
-        , 'url': ''
+        , 'url': 'assets/images/KrulCircle.png'
+    },
+    {
+        'name': 'Krul',
+        'serverName': '*Krul*'
+        , 'url': 'assets/images/KrulCircle.png'
     },
     {
         'name': 'Skaarf',
         'serverName': '*Hero010*'
-        , 'url': ''
+        , 'url': 'assets/images/SkaarfCircle.png'
+    },
+    {
+        'name': 'Skaarf',
+        'serverName': '*Skaarf*'
+        , 'url': 'assets/images/SkaarfCircle.png'
     },
     {
         'name': 'Rona',
         'serverName': '*Hero016*'
-        , 'url': ''
+        , 'url': 'assets/images/RonaCircle.png'
+    },
+    {
+        'name': 'Rona',
+        'serverName': '*Rona*'
+        , 'url': 'assets/images/RonaCircle.png'
     },
     {
         'name': 'Idris',
         'serverName': '*Idris*'
-        , 'url': ''
+        , 'url': 'assets/images/IdrisCircle.png'
     },
     {
         'name': 'Joule',
         'serverName': '*Joule*'
-        , 'url': ''
+        , 'url': 'assets/images/JouleCircle.png'
     },
     {
         'name': 'Kestrel',
         'serverName': '*Kestrel*'
-        , 'url': ''
+        , 'url': 'assets/images/KestrelCircle.png'
     },
     {
         'name': 'Koshka',
         'serverName': '*Koshka*'
-        , 'url': ''
+        , 'url': 'assets/images/KoshkaCircle.png'
     },
     {
         'name': 'Lance',
         'serverName': '*Lance*'
-        , 'url': ''
+        , 'url': 'assets/images/LanceCircle.png'
     },
     {
         'name': 'Lyra',
         'serverName': '*Lyra*'
-        , 'url': ''
+        , 'url': 'assets/images/LyraCircle.png'
     },
     {
         'name': 'Ozo',
         'serverName': '*Ozo*'
-        , 'url': ''
+        , 'url': 'assets/images/OzoCircle.png'
     },
     {
         'name': 'Petal',
         'serverName': '*Petal*'
-        , 'url': ''
+        , 'url': 'assets/images/PetalCircle.png'
     },
     {
         'name': 'Phinn',
         'serverName': '*Phinn*'
-        , 'url': ''
+        , 'url': 'assets/images/PhinnCircle.png'
     },
     {
         'name': 'Reim',
         'serverName': '*Reim*'
-        , 'url': ''
+        , 'url': 'assets/images/ReimCircle.png'
     },
     {
         'name': 'Ringo',
         'serverName': '*Ringo*'
-        , 'url': ''
+        , 'url': 'assets/images/RingoCircle.png'
     },
     {
         'name': 'SAW',
         'serverName': '*SAW*'
-        , 'url': ''
+        , 'url': 'assets/images/SawCircle.png'
     },
     {
         'name': 'Samuel',
         'serverName': '*Samuel*'
-        , 'url': ''
+        , 'url': 'assets/images/SamuelCircle.png'
     },
     {
         'name': 'Taka',
         'serverName': '*Sayoc*',
-        'url': ''
+        'url': 'assets/images/TakaCircle.png'
+    },
+    {
+        'name': 'Taka',
+        'serverName': '*Taka*',
+        'url': 'assets/images/TakaCircle.png'
     },
     {
         'name': 'Skye',
         'serverName': '*Skye*',
-        'url': ''
+        'url': 'assets/images/SkyeCircle.png'
     },
     {
         'name': 'Vox',
         'serverName': '*Vox*',
-        'url': ''
+        'url': 'assets/images/VoxCircle.png'
     },
     {
         'serverName': '*1000_Item_HalcyonPotion*',
@@ -806,7 +826,10 @@ const Names: Array<{name: string, serverName: string, url: string}> = [
     }
 ];
 
-let newNames = new Map<string, any>();
-Names.forEach(item => newNames.set(item.serverName, {name: item.name, url: item.url}));
+let vgNames = new Map<string, any>();
+let commonNames = new Map<string, any>();
+Names.forEach(item => vgNames.set(item.serverName, {name: item.name, url: item.url}));
+Names.forEach(item => commonNames.set(item.name, {name: item.serverName, url: item.url}));
 
-export const VgNamesMap = newNames;
+export const VgNamesMap = vgNames;
+export const CommonNamesMap = commonNames;

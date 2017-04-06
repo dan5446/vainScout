@@ -1,3 +1,11 @@
 <form #f="ngForm" (ngSubmit)="onSubmit()">
-    <input type="text" maxlength="120" [(ngModel)]="playerName" placeholder="Player Name" (change)="change($event)" name="player" autocomplete="off">
+    <select [(ngModel)]="region" name="region">
+        <option value="na" selected>North America</option>
+        <option value="eu">Europe</option>
+        <option value="sa">South America</option>
+        <option value="ea">East Asia</option>
+        <option value="sea">Southeast Asia</option>
+    </select>
+    <input type="text" maxlength="120" [(ngModel)]="playerName" placeholder="Player Name" name="player" autocomplete="off">
+    <button type="submit" value="Submit">Submit</button>
 </form>

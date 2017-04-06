@@ -27,6 +27,7 @@ testem.log
 /typings
 server.cert
 server.key
+firebase-debug.log
 
 
 # e2e

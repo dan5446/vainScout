@@ -5,7 +5,7 @@ import { AngularFire, FirebaseListObservable } from 'angularfire2';
 
 declare var require: any;
 @Component({
-    selector: 'vg-root',
+    selector: 'vs-root',
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.css']
 })

@@ -9,7 +9,7 @@ import { FlatMatch, FlatRoster, FlatPlayer } from '../api/datatypes';
 import { CommonNamesMap } from '../actors';
 
 @Component({
-    selector: 'vg-player-detail',
+    selector: 'vs-player-detail',
     templateUrl: './player-detail.component.html',
     styleUrls: ['./player-detail.component.css']
 })

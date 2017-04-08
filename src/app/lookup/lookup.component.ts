@@ -1,11 +1,15 @@
 import { Component, OnInit } from '@angular/core';
+import { Observable } from 'rxjs/Observable';
+
 import { ApiStoreService } from '../api/api-store.service';
 import { FirebaseService } from '../firebase/firebase.service';
-import { FirebaseStore } from '../firebase/firebase.store.service';
 
+import { Store } from '@ngrx/store';
+import { Search } from '../core/player-actions';
+import * as fromRoot from '../core/reducers';
 
 @Component({
-    selector: 'vg-lookup',
+    selector: 'vs-lookup',
     templateUrl: './lookup.component.html',
     styleUrls: ['./lookup.component.css']
 })
@@ -14,18 +18,12 @@ export class LookupComponent implements OnInit {
     region = 'na';
     playerName: string;
 
-    constructor(private api: ApiStoreService, private db: FirebaseService, private data: FirebaseStore) { }
+    constructor(private store: Store<fromRoot.State>) { }
 
     ngOnInit() {}
 
     onSubmit() {
-        this.db.region = this.region;
-        this.db.player = this.playerName;
-        this.api.region = this.region;
-        this.api.player = this.playerName;
-        this.data.region = this.region;
-        this.data.playerName = this.playerName;
-        this.data.fetchPlayerData();
+        this.store.dispatch(new Search({ region: this.region, name: this.playerName }));
     }
 
     changed(event: any) {

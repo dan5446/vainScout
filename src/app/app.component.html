@@ -2,7 +2,7 @@
     <div style="width:20px"></div>  
     <h1>{{title}}</h1>
     <!--<img src="{{image}}" alt="">-->
-    <vg-lookup style="flex:1 0 auto"></vg-lookup>
+    <vs-lookup style="flex:1 0 auto"></vs-lookup>
 
     <small> {{ (af.auth | async)?.uid }} </small>
     <button *ngIf="!(af.auth | async)?.uid" (click)="login()">Login</button>

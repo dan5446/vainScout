@@ -15,11 +15,7 @@ export class AppComponent {
     image: string;
     private loggedIn: boolean;
 
-    constructor(private api: ApiStoreService, public af: AngularFire) { }
-
-    ngOnInit() {
-        this.api.playerStats.subscribe(data => this.playerStats = data)
-    }
+    constructor(public af: AngularFire) { }
 
     login() {
         this.af.auth.login();

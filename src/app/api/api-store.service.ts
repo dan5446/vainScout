@@ -20,7 +20,7 @@ export class ApiStoreService {
 
     set player(player: any) {
         this._player.next(player);
-        this.loadPlayerData();
+        // this.loadPlayerData();
     }
 
     get playerStats() {
@@ -28,7 +28,7 @@ export class ApiStoreService {
     }
 
     get commonHeroes() {
-        this.fetchCommonHeroes();
+        // this.fetchCommonHeroes();
         return this._commonHeroes.asObservable();
     }
 
@@ -40,20 +40,20 @@ export class ApiStoreService {
         this._region.next(region);
     }
 
-    fetchCommonHeroes() {
-        this.api.getMatches(null, queries.players(this._player.value))
-            .subscribe(
-                res => {
-                    this._commonHeroes.next(res);
-                }
-            );
-    }
+    // fetchCommonHeroes() {
+    //     this.api.getMatches(null, queries.players(this._player.value))
+    //         .subscribe(
+    //             res => {
+    //                 this._commonHeroes.next(res);
+    //             }
+    //         );
+    // }
 
-    loadPlayerData() {
-        this.api.getPlayerByName(this._player.value).subscribe(
-            res => {
-                this._playerStats.next(res.data[0]);
-            }
-        );
-    }
+    // loadPlayerData() {
+    //     this.api.getPlayerByName(this._player.value).subscribe(
+    //         res => {
+    //             this._playerStats.next(res);
+    //         }
+    //     );
+    // }
 }

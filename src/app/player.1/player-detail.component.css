@@ -1,0 +1,55 @@
+
+:host > div {
+    border: 1 px solid black;
+    margin: 20px;
+}
+
+.flex-col {
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
+    flex-direction: column;
+    flex-wrap: wrap;
+}
+
+.flex-item {
+    flex: 1 0 auto;
+    text-align: right;
+    padding: 5px;
+}
+
+h2 {
+    font-family: northwood;
+    font-size: 40px;
+    line-height: 10px;
+    font-weight: 300;
+    zoom: 1.5;
+    -webkit-font-smoothing: antialiased;
+    margin-bottom: 10px;
+}
+
+.recent-matches li {
+    list-style: none;
+}
+
+img {
+    width: auto;
+    height: auto;
+    max-width: 55px;
+    max-height: 55px;
+    border-radius: 50%;
+}
+
+.lookup-message {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.lookup-message > span {
+    margin-top: 10px;
+    border: 1px solid rgba(0,0,0,0.2);
+    padding: 10px;
+    background-color: rgba(0,0,0,0.03);
+    border-radius: 7px;
+}

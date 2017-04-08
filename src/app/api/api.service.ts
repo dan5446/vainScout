@@ -13,7 +13,8 @@ import { queue } from 'rxjs/scheduler/queue';
 // import 'rxjs/add/scheduler/queue';
 
 import { ApiStoreService } from './api-store.service';
-import { VgApiResponse } from './datatypes';
+import { VgApiResponse, FlatPlayer } from './datatypes';
+import { FirebasePlayer } from '../firebase/datatypes';
 
 export const defaults = {
     host: 'https://api.dc01.gamelockerapp.com/shards/',
@@ -57,6 +58,7 @@ export const queries = {
 export class ApiService {
     private headers;
     private matches: BehaviorSubject<VgApiResponse> = new BehaviorSubject(null);
+
     constructor(private http: Http) {
         this.headers = new Headers({
             'Accept': 'application/vnd.api+json',
@@ -66,8 +68,8 @@ export class ApiService {
         });
     }
 
-    getMatches(regionId, filters) {
-        let d = new Date('2017/01/01');
+    getLatestMatches(regionId, filters) {
+        let d = new Date('2017/02/01');
         let queryString = defaults.host + (regionId || defaults.region) +
             '/matches?' + queries.sort('-createdAt') + '&' + filters + '&' + queries.startTime(d) + '&' + queries.page(0);
         return this.http
@@ -76,114 +78,29 @@ export class ApiService {
             .map((res: Response) => new VgApiResponse(res.json()));
     }
 
-    getMatchesUntilPrime(regionId, filters, dateTime: Date) {
-        
-    }
+    getMatchesUntilPrime(regionId, filters, dateTime: Date) {}
 
-    getMatchesUntil(regionId, filters, dateTime: Date) {
-        // console.log(Scheduler)
-        const page = (rId, fs) => this.getMatches(rId, fs);
-        let mts;
-        let mr = this.matches;
-        const getEarliest = (date, val) => val ? new Date(val.data[val.data.length - 1].attributes.createdAt) : new Date(date.getTime() - 60*1000);
-        // this.matches.next(1);
-        page(regionId, filters + '&' + queries.endTime(dateTime))
-            .catch(err => Observable.throw(err))
-            .take(1).subscribe(
-                res => {
-                    mts = res;
-                });
-        queue.schedule(function (dt) {
-            console.log(mts, mts.data.length);
-            let sub;
-            if (dt > earliestApiMatchDate) {
-                page(regionId, filters + '&' + queries.endTime(dt))
-                .catch(err => Observable.throw(err))
-                .take(1).subscribe(
-                    res => {
-                        mts = mts.combine(res);
-                    },
-                    err => {
-                        console.log(err);
-                        mr.next(mts);
-                        sub.unsubscribe();
-                    });
-                console.log('before', dt);
-                dt = getEarliest(dt, mts);
-                console.log('earliest from last call: ', dt);
-                sub = this.schedule(dt, 500);
-                // sub = this.schedule(dt, 2000); // `this` references currently executing Action,
-                // // which we reschedule with new state
-                console.log('after', dt);
-            }
-        }, 2000, getEarliest(dateTime, mts));
-
-        return this.matches.asObservable();
-    }
-
-    // getMatchesUntil(regionId, filters, dateTime: Date) {
-    //     if (dateTime < new Date('2017/01/01')) { return Observable.empty(); }
-    //     const page = this.getMatches(regionId, filters + '&' + queries.endTime(dateTime));
-    //     const findOldest = (res) => res.data[res.data.length - 1];
-    //     return page.expand(res => {
-    //             const earliest = new Date(findOldest(res).attributes.createdAt);
-    //             return this.getMatchesUntilR(regionId, filters, earliest, res);
-    //         }).catch(err => {
-    //             return Observable.empty();
-    //         });
-    // }
-
-    // getMatchesUntilR(regionId, filters, dateTime: Date, aData = <VgApiResponse>{data: [], included: []}) {
-    //     if (dateTime < new Date('2017/01/01')) { return Observable.empty(); }
-    //     const page = this.getMatches(regionId, filters + '&' + queries.endTime(dateTime));
-    //     const findOldest = (res) => res.data[res.data.length - 1];
-    //     return page.map(res => {
-    //             res.data = (<Array<any>>aData.data).concat(res.data);
-    //             res.included = aData.included.concat(res.included);
-    //             console.log(res);
-    //             return res;
-    //         }).expand(res => {
-    //             const earliest = new Date(findOldest(res).attributes.createdAt);
-    //             return this.getMatchesUntilR(regionId, filters, earliest, res);
-    //         }).catch(err => {
-    //             return Observable.forkJoin(Observable.from([aData]), Observable.empty());
-    //         });
-    // }
-
-    // getMatchHistory(regionId, filters) {
-    //     const toFilter = (match) => queries.endTime(new Date(match.attributes.createdAt));
-    //     const findOldest = (res) => res.data[res.data.length - 1];
-    //     const page = this.getMatches(regionId, filters);
-    //     const rt = page.flatMap(res => { console.log(filters + '&' + toFilter(findOldest(res))); return this.getMatches(regionId, filters + '&' + toFilter(findOldest(res)));});
-    //     console.log(rt);
-    //     return Observable.forkJoin(rt);
-    //     // firstPageObs.map(res => )
-    //     // const earliest = new Date();
-    //     // d.setDate(d.getDate() - 5000);
-    //     // let queryString = defaults.host + (regionId || defaults.region) +
-    //     //     '/matches?' + queries.sort('-createdAt') + '&' + filters + '&' + queries.startTime(d) + '&' + queries.page(0);
-    //     // return this.http
-    //     //     .get(queryString, { headers: this.headers })
-    //     //     .map((res: Response) => new VgApiResponse(res.json()));
-    // }
-
-    getMatch(matchId: string) {
+    getMatch(matchId: string, region = 'na') {
         return this.http
-            .get(defaults.host + defaults.region + '/matches/' + matchId, { headers: this.headers })
+            .get(defaults.host + region + '/matches/' + matchId, { headers: this.headers })
             .map((res: Response) => new VgApiResponse(res.json()));
     }
 
     /** Fetch Specific Player by Id */
     getPlayerByName(playerName: string, region: string = 'na') {
         return this.http
-            .get(defaults.host + defaults.region + '/players' + '?' + queries.players(playerName), { headers: this.headers })
+            .get(defaults.host + region + '/players' + '?' + queries.players(playerName), { headers: this.headers })
             .map((res: Response) => new VgApiResponse(res.json()))
+            .map(res => res.data[0])
+            .map(player => new FlatPlayer(player))
+            .catch(error => Observable.of(null));
     }
 
-    getPlayerById(playerId: string) {
+    getPlayerById(playerId: string, region: string = 'na') {
         return this.http
-            .get(defaults.host + defaults.region + '/players/' + playerId, { headers: this.headers })
-            .map((res: Response) => new VgApiResponse(res.json()));
+            .get(defaults.host + region + '/players/' + playerId, { headers: this.headers })
+            .map((res: Response) => new VgApiResponse(res.json()))
+            .map(response => new FlatPlayer(response.data[0]))
     }
 
     /** Not yet Implemented */

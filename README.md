@@ -1,6 +1,4 @@
-[![CI Status]
-   (http://img.shields.io/travis/roamlrs/roamlrs.svg?style=flat)]
-   (https://travis-ci.org/roamlrs/roamlrs)
+[![Build Status](https://travis-ci.org/dan5446/vainScout.svg?branch=master)](https://travis-ci.org/dan5446/vainScout)
 
 # vainScout
 

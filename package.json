@@ -7,7 +7,7 @@
     "start": "ng serve",
     "build": "ng build",
     "deploy": "ng build --prod --aot && firebase deploy --except functions",
-    "deploy:functions": "firebase deploy --only functions",
+    "deploy:functions": "tsc ./functions/index.ts && firebase deploy --only functions",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"

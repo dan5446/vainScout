@@ -18,7 +18,7 @@ export class PlayerEffects {
   searchFirebase$: Observable<Action> = this.actions$.ofType(SearchActions.SEARCH)
     .map((action: SearchActions.Search) => action.payload)
     .do(data => console.log(data))
-    .switchMap(params => this.firebaseService.fetchPlayer(params.term, params.region))
+    .switchMap(params => this.firebaseService.fetchPlayer(params.name, params.region))
     .map((result: any)  => result.id ? new SearchActions.SearchSuccess(result) : new SearchActions.SearchFail(result));
 
 

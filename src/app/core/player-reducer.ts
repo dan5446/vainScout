@@ -20,7 +20,7 @@ export function reducer(state = initialState, action: PlayerActions.All): State 
         case PlayerActions.SEARCH: {
             return {
                 ...state,
-                searchTerm: action.payload.term,
+                searchTerm: action.payload.name,
                 region: action.payload.region,
                 playerNotFound: false
             };

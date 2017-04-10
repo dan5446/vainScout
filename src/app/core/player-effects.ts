@@ -24,6 +24,7 @@ export class PlayerEffects {
     @Effect()
     searchPlayerSuccess$: Observable<Action> = this.actions$.ofType(PlayerActions.SEARCH_SUCCESS)
         .map((action: MatchesActions.Search) => action.payload)
+        .do(p => console.log(p))
         .do(params => this.firebaseService.markPlayerRequest(params))
         .map(params => new MatchesActions.Search(params));
 

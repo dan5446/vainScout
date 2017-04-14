@@ -1,4 +1,4 @@
-import { VgNamesMap } from '../actors';
+import { VgNamesMap } from './actors';
 
 export class VgApiResponse {
     data: any;
@@ -500,7 +500,7 @@ export class FlatRoster {
     turretsRemaining: string;
     participants: [FlatParticipant, FlatParticipant, FlatParticipant];
     winner: boolean;
-    players: Array<any>;
+    players: Array<FlatPlayer>;
     // team: FlatTeam; Todo: Implement when teams are implemented
     constructor(roster: Roster, included: Array<any>) {
         this.acesEarned = roster.attributes.stats.acesEarned;
@@ -515,7 +515,7 @@ export class FlatRoster {
         this.participants = <[FlatParticipant, FlatParticipant, FlatParticipant]>participantList
             .map(participant => new FlatParticipant(participant, players));
         this.winner = this.participants.length ? this.participants[0].winner : false;
-        this.players = this.participants.map(item => new Object({ id: item.playerId, name: item.playerName }) );
+        this.players = this.participants.map(item => item.player);
     }
     private findParticipants(ids: Array<string>, included: Array<any>) {
         return included
@@ -526,7 +526,7 @@ export class FlatRoster {
 
 export class FlatParticipant {
     playerId: string;
-    playerName: string;
+    player: FlatPlayer;
     actor: string;
     assists: number;
     crystalMineCaptures: number;
@@ -573,7 +573,7 @@ export class FlatParticipant {
         this.wentAfk = participant.attributes.stats.wentAfk;
         this.winner = participant.attributes.stats.winner;
         this.playerId = participant.relationships.player.data.id;
-        this.playerName = players.filter(player => player.id === this.playerId).pop().attributes.name
+        this.player = new FlatPlayer(players.filter(player => player.id === this.playerId).pop());
     }
 }
 
@@ -581,27 +581,27 @@ export class FlatPlayer {
     id: string;
     name: string;
     shardId: string;
-    level: string;
-    lifetimeGold: string;
-    lossStreak: string ;
-    played: string;
-    played_ranked: string;
-    winStreak: string;
-    wins: string;
-    xp: string;
+    level: number;
+    lifetimeGold: number;
+    lossStreak: number;
+    played: number;
+    played_ranked: number;
+    winStreak: number;
+    wins: number;
+    xp: number;
     matches: Array<string>;
     constructor(player: Player, matches: Array<Match> = null) {
         this.id = player.id;
         this.name = player.attributes.name;
         this.shardId = player.attributes.shardId;
-        this.level = player.attributes.stats.level;
-        this.lifetimeGold = player.attributes.stats.lifetimeGold;
-        this.lossStreak = player.attributes.stats.lossStreak;
-        this.played = player.attributes.stats.played;
-        this.played_ranked = player.attributes.stats.played_ranked;
-        this.winStreak = player.attributes.stats.winStreak;
-        this.wins = player.attributes.stats.wins;
-        this.xp = player.attributes.stats.xp;
+        this.level = +player.attributes.stats.level;
+        this.lifetimeGold = +player.attributes.stats.lifetimeGold;
+        this.lossStreak = +player.attributes.stats.lossStreak;
+        this.played = +player.attributes.stats.played;
+        this.played_ranked = +player.attributes.stats.played_ranked;
+        this.winStreak = +player.attributes.stats.winStreak;
+        this.wins = +player.attributes.stats.wins;
+        this.xp = +player.attributes.stats.xp;
         this.matches = matches ? matches.map(item => item.id) : [];
     }
 }

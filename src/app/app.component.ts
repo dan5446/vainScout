@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
-import { ApiStoreService } from './api/api-store.service';
 import { AngularFire, FirebaseListObservable } from 'angularfire2';
 
 declare var require: any;

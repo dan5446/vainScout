@@ -1,15 +1,21 @@
 import { NgModule, Optional, SkipSelf } from '@angular/core';
 
-import { StoreModule } from '@ngrx/store';
-import { reducers } from './reducers';
+import { StoreModule, combineReducers, } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
-import { PlayerEffects } from './player-effects';
+import { compose } from '@ngrx/core/compose';
+import { storeFreeze } from 'ngrx-store-freeze';
+
+import { reducer } from './store/reducers';
+import { PlayerEffects } from './store/effects';
 
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { environment } from '../../environments/environment';
+
+import { FirebaseService, ApiService } from './services';
 
 @NgModule({
     imports: [
-        StoreModule.provideStore(reducers),
+        StoreModule.provideStore(reducer),
         EffectsModule.run(PlayerEffects),
         StoreDevtoolsModule.instrumentOnlyWithExtension()
     ],
@@ -19,6 +25,10 @@ export class CoreModule {
     static forRoot() {
         return {
             ngModule: CoreModule,
+            providers: [
+                ApiService,
+                FirebaseService
+            ]
         };
     }
     constructor( @Optional() @SkipSelf() parentModule: CoreModule) {

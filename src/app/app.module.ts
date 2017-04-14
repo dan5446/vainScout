@@ -9,11 +9,6 @@ import { AppComponent } from './app.component';
 import { LookupComponent } from './lookup/lookup.component';
 import { PlayerDetailComponent } from './player/player-detail.component';
 import { MatchDetailComponent } from './matches/match-detail.component';
-
-import { ApiService } from './api/api.service';
-import { ApiStoreService } from './api/api-store.service';
-import { FirebaseService } from './firebase/firebase.service';
-
 import { environment } from '../environments/environment';
 
 const configErrMsg = `You have not configured and imported the Firebase SDK.
@@ -52,12 +47,7 @@ const myFirebaseAuthConfig = {
         AngularFireModule.initializeApp(environment.firebase, myFirebaseAuthConfig),
         CoreModule.forRoot()
     ],
-    providers: [
-        //   ApiStoreService,
-        ApiService,
-        FirebaseService,
-        //   FirebaseStore
-    ],
+    providers: [],
     bootstrap: [AppComponent]
 })
 export class AppModule { }

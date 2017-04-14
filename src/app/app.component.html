@@ -1,7 +1,6 @@
 <div class="toolbar" style="display: flex; flex-wrap: row; align-items: center;">
     <div style="width:20px"></div>  
     <h1>{{title}}</h1>
-    <!--<img src="{{image}}" alt="">-->
     <vs-lookup style="flex:1 0 auto"></vs-lookup>
 
     <small> {{ (af.auth | async)?.uid }} </small>
@@ -10,4 +9,3 @@
 
 </div>
 <vs-player-detail></vs-player-detail>
-<!--<vg-diagnostics [diagnostics]="diagnostics | async"></vg-diagnostics>-->

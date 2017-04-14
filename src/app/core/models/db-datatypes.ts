@@ -1,5 +1,5 @@
-import { VgNamesMap } from '../actors';
-import { ItemOccurence } from '../api/datatypes';
+import { VgNamesMap } from './actors';
+import { ItemOccurence } from './api-datatypes';
 
 export class FirebaseMatch {
     id: string;
@@ -114,10 +114,10 @@ export class FirebasePlayer {
     level: string;
     lifetimeGold: string;
     lossStreak: string ;
-    played: string;
+    played: number;
     played_ranked: string;
     winStreak: string;
-    wins: string;
+    wins: number;
     xp: string;
     constructor(player: any) {
         this.id = player.id;
@@ -126,10 +126,10 @@ export class FirebasePlayer {
         this.level = player.level;
         this.lifetimeGold = player.lifetimeGold;
         this.lossStreak = player.lossStreak;
-        this.played = player.played;
+        this.played = +player.played;
         this.played_ranked = player.played_ranked;
         this.winStreak = player.winStreak;
-        this.wins = player.wins;
+        this.wins = +player.wins;
         this.xp = player.xp;
     }
 }

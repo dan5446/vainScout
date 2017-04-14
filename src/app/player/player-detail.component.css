@@ -53,3 +53,12 @@ img {
     background-color: rgba(0,0,0,0.03);
     border-radius: 7px;
 }
+
+button[disabled] {
+    color: rgba(0,0,0,0.3);
+    cursor: not-allowed;
+}
+
+button {
+    cursor: pointer;
+}

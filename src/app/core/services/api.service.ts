@@ -12,28 +12,22 @@ import 'rxjs/scheduler/queue';
 import { queue } from 'rxjs/scheduler/queue';
 // import 'rxjs/add/scheduler/queue';
 
-import { ApiStoreService } from './api-store.service';
-import { VgApiResponse, FlatPlayer } from './datatypes';
-import { FirebasePlayer } from '../firebase/datatypes';
+import { VgApiResponse, FlatPlayer } from '../models';
+import { FirebasePlayer } from '../models';
+import { environment } from '../../../environments/environment';
 
-export const defaults = {
-    host: 'https://api.dc01.gamelockerapp.com/shards/',
-    region: 'na',
-    statusUrl: 'https://api.dc01.gamelockerapp.com/status',
-    title: 'semc-vainglory',
-};
+const configErrMsg = `You have not configured and imported the Vainglory Api.`;
 
-export const regions = {
-    'North America': 'na',
-    'Europe': 'eu',
-    'South America': 'sa',
-    'East Asia': 'ea',
-    'Southeast Asia': 'sg',
-};
+if (!environment.vgApi) {
+    if (!environment.vgApi.apiKey) {
+        window.alert(configErrMsg);
+    }
+}
 
-export const earliestApiMatchDate = new Date('2017/01/01');
+export const earliestApiMatchDate = new Date('2017/02/13').toISOString();
+export const baseUrl = 'https://api.dc01.gamelockerapp.com';
 
-export const queries = {
+export const queriesyo = {
     // Default: 0	Allows paging over results
     page: (pageNum: number) => 'page[offset]=' + pageNum,
     // Default: 50	The default (and current maximum) is 50. Values less than 50 and great than 2 are supported.
@@ -63,44 +57,37 @@ export class ApiService {
         this.headers = new Headers({
             'Accept': 'application/vnd.api+json',
             'X-TITLE-ID': 'semc-vainglory',
-            // tslint:disable-next-line:max-line-length
-            'Authorization': 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIwNGYzYTZhMC1kZDAwLTAxMzQtMTg5Yi0wMjQyYWMxMTAwMDQiLCJpc3MiOiJnYW1lbG9ja2VyIiwib3JnIjoiZGFuNTQ0Ni1nbWFpbC1jb20iLCJhcHAiOiIwNGVmZTM2MC1kZDAwLTAxMzQtMTg5YS0wMjQyYWMxMTAwMDQiLCJwdWIiOiJzZW1jIiwidGl0bGUiOiJ2YWluZ2xvcnkiLCJzY29wZSI6ImNvbW11bml0eSIsImxpbWl0IjoxMH0.fbhLFjBtA9GG7aOYo-4U1necI5axGbJCSKNcgPSjMMU'
+            'Authorization': environment.vgApi.apiKey
         });
     }
 
-    getLatestMatches(regionId, filters) {
-        let d = new Date('2017/02/01');
-        let queryString = defaults.host + (regionId || defaults.region) +
-            '/matches?' + queries.sort('-createdAt') + '&' + filters + '&' + queries.startTime(d) + '&' + queries.page(0);
+    getLatestMatches(region: string, playerName: string) {
+        const uriComponents = [ baseUrl, 'shards', region, 'matches'];
+        const uriString = uriComponents.map(component => `${encodeURI(component)}`).join('/');
+        const queries = { 'filter[playerNames]': playerName, 'filter[createdAt-start]': earliestApiMatchDate, sort: '-createdAt' };
+        const queryString = Object.entries(queries).map(([k, v]) => `${encodeURIComponent(k)}=${encodeURIComponent(v)}`).join('&');
+        const requestString = [`${uriString}`, `${queryString}`].join('?');
+        console.log(uriString, queryString, requestString);
+
         return this.http
-            .get(queryString, { headers: this.headers })
-            .catch(err => Observable.throw(err))
+            .get(requestString, { headers: this.headers })
+            .catch(err => Observable.of(null))
             .map((res: Response) => new VgApiResponse(res.json()));
     }
 
-    getMatchesUntilPrime(regionId, filters, dateTime: Date) {}
+    getPlayer(playerName: string, region: string = 'na') {
+        const uriComponents = [ baseUrl, 'shards', region, 'players'];
+        const uriString = uriComponents.map(component => `${encodeURI(component)}`).join('/');
+        const queries = { 'filter[playerNames]': playerName };
+        const queryString = Object.entries(queries).map(([k, v]) => `${encodeURIComponent(k)}=${encodeURIComponent(v)}`).join('&');
+        const requestString = [`${uriString}`, `${queryString}`].join('?');
 
-    getMatch(matchId: string, region = 'na') {
         return this.http
-            .get(defaults.host + region + '/matches/' + matchId, { headers: this.headers })
-            .map((res: Response) => new VgApiResponse(res.json()));
-    }
-
-    /** Fetch Specific Player by Id */
-    getPlayerByName(playerName: string, region: string = 'na') {
-        return this.http
-            .get(defaults.host + region + '/players' + '?' + queries.players(playerName), { headers: this.headers })
+            .get(requestString, { headers: this.headers })
             .map((res: Response) => new VgApiResponse(res.json()))
             .map(res => res.data[0])
             .map(player => new FlatPlayer(player))
             .catch(error => Observable.of(null));
-    }
-
-    getPlayerById(playerId: string, region: string = 'na') {
-        return this.http
-            .get(defaults.host + region + '/players/' + playerId, { headers: this.headers })
-            .map((res: Response) => new VgApiResponse(res.json()))
-            .map(response => new FlatPlayer(response.data[0]))
     }
 
     /** Not yet Implemented */

@@ -80,14 +80,14 @@ exports.matchRequestConsumer = functions.database.ref('/apiQueue/{region}/{playe
     }
     console.log("[ApiConsumer] " + playerName + " " + region + " " + JSON.stringify(query, null, 2));
     var options = {
-        uri: baseApiUrl + "/" + region + "/matches",
+        uri: baseApiUrl + "/shards/" + region + "/matches",
         qs: query,
         headers: {
             'Accept': 'application/vnd.api+json',
             'X-TITLE-ID': 'semc-vainglory',
             'Authorization': functions.config().api.key
         },
-        json: true // Automatically parses the JSON string in the response
+        json: true
     };
     request(options)
         .then(function (matches) {

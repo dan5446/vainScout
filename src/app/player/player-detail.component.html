@@ -1,24 +1,28 @@
-<div *ngIf="!(player | async) && !(playerNotFound | async)" class="lookup-message"><span>Hint: Enter a player name / region above to see player stats</span></div>
+<div *ngIf="!(player | async | async) && !(playerNotFound | async)" class="lookup-message"><span>Hint: Enter a player name / region above to see player stats</span></div>
 <div *ngIf="playerNotFound | async" class="lookup-message"><span>Player not found. Note: Player names are case sensitive</span></div>
 
-<div *ngIf="(player | async) && !(playerNotFound | async)">
+<div *ngIf="(player | async | async) && !(playerNotFound | async)">
 
     <div class="flex-col">
-        <div class="flex-item"><h2>{{ (player | async)?.name }}</h2></div>
-        <div class="flex-item">STREAK: 
-            <span *ngIf="(player | async)?.lossStreak">-{{ (player | async)?.lossStreak }}</span>
-            <span *ngIf="(player | async)?.winStreak">+{{ (player | async)?.winStreak }}</span>
+        <div class="flex-item">
+            <h2>{{ (player | async | async)?.name }}</h2>
         </div>
-        <div class="flex-item">WIN RATE: {{ ((player | async)?.wins / (player | async)?.played * 100).toFixed(2) }}%</div>
+        <div class="flex-item">STREAK:
+            <span *ngIf="(player | async | async)?.lossStreak">-{{ (player | async | async)?.lossStreak }}</span>
+            <span *ngIf="(player | async | async)?.winStreak">+{{ ( player | async | async)?.winStreak }}</span>
+        </div>
+        <div class="flex-item">WIN RATE: {{ ((player | async | async)?.wins / (player | async | async)?.played * 100).toFixed(2) }}%</div>
         <!--<div class="flex-item">MAINS: <span *ngFor="let hero of commonHeroes"><img src="{{ hero }}" alt=""> </span></div>-->
     </div>
 
-    <div class="recent-matches" *ngIf="true">
+    <div class="recent-matches" *ngIf="(matchCount | async)">
         <h3>Recent Matches <small>{{ getRangeString((page | async), (matchCount | async), (pageSize | async), (matches | async)) }}</small></h3>
         <!--<ul>
             <li *ngFor="let match of (matches | async)">{{ (match | async).createdAt | date : 'short' }} - {{ (match | async).duration / 60 | number :'1.0-0' }}:{{ (match | async).duration % 60 | number : '2.0-0' }} {{ (match | async).gameMode }}</li>
         </ul>-->
-        <vs-match-detail *ngFor="let match of (matches | async)" [match]="match"></vs-match-detail>
+        <vs-match-detail *ngFor="let match of (matches | async)" [player]="player | async | async" [match]="match | async"></vs-match-detail>
+        <button [disabled]="(page | async) === 0" (click)="decrementPage(page)">< Back</button><button (click)="incrementPage(page)"
+            [disabled]="lastPage((page|async), (matchCount|async), (pageSize|async), (matches | async))">More ></button>
     </div>
-    <button [disabled]="(page | async) === 0" (click)="decrementPage()">< Back</button><button (click)="incrementPage()" [disabled]="lastPage((page|async), (matchCount|async), (pageSize|async), (matches | async))">More ></button>
+
 </div>

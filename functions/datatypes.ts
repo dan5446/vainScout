@@ -589,8 +589,7 @@ export class FlatPlayer {
     winStreak: string;
     wins: string;
     xp: string;
-    matches: Array<string>;
-    constructor(player: Player, matches: Array<Match> = null) {
+    constructor(player: Player) {
         this.id = player.id;
         this.name = player.attributes.name;
         this.shardId = player.attributes.shardId;
@@ -602,6 +601,5 @@ export class FlatPlayer {
         this.winStreak = player.attributes.stats.winStreak;
         this.wins = player.attributes.stats.wins;
         this.xp = player.attributes.stats.xp;
-        this.matches = matches ? matches.map(item => item.id) : [];
     }
 }

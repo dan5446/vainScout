@@ -14,7 +14,12 @@ var request = require("request-promise");
 var datatypes_1 = require("./datatypes");
 admin.initializeApp(functions.config().firebase);
 var earliestMatchTimeString = moment('2017-02-14T00:00:01Z').toISOString();
-var baseApiUrl = 'https://api.dc01.gamelockerapp.com/shards/';
+var baseApiUrl = 'https://api.dc01.gamelockerapp.com';
+var apiHeaders = {
+    'Accept': 'application/vnd.api+json',
+    'X-TITLE-ID': 'semc-vainglory',
+    'Authorization': functions.config().api.key
+};
 var addNextApiRequest = function (event, region, playerName) {
     event.data.adminRef.root.child("/players/" + region + "/" + playerName + "/matches").once('value')
         .then(function (data) {
@@ -27,10 +32,9 @@ var addNextApiRequest = function (event, region, playerName) {
         var matchIds = Object.keys(matchDict);
         var earliest = matchDict[matchIds[0]];
         var queries = {
-            'sort': '-createdAt',
-            'filter%5BplayerNames%5D': playerName,
-            'filter%5BcreatedAt-start%5D': earliestMatchTimeString,
-            'filter%5BcreatedAt-end%5D': moment(earliest).subtract(1, 'minutes').toISOString()
+            'playerNames': playerName,
+            'createdAt-start': earliestMatchTimeString,
+            'createdAt-end': moment(earliest).subtract(1, 'minutes').toISOString()
         };
         event.data.adminRef.root.child("/apiQueue/" + region + "/" + playerName).set(queries);
         console.log('An api request has been set with the following queries: ', JSON.stringify(queries, null, 2));
@@ -60,13 +64,14 @@ var addPlayer = function (flatPlayer, region, event) {
 };
 var addMatches = function (matches, playerName, region, event) {
     var matchId = function (match) { return (new Date(match.createdAt).getTime() / 1000).toString() + match.id; };
-    var matchMetaAdd = function (name, match) {
-        return event.data.adminRef.root.child("/players/" + region + "/" + name + "/matches/" + matchId(match)).set(match.createdAt);
-    };
-    matches.map(function (match) { return event.data.adminRef.root.child("/matches/" + region + "/" + matchId(match)).set(match); });
-    matches.map(function (match) { return matchMetaAdd(playerName, match); });
-    matches.map(function (m) { return m.players.map(function (player) { return addPlayer(player, region, event); }); });
-    matches.map(function (match) { return match.players.map(function (p) { return matchMetaAdd(p.name, match); }); });
+    var matchMetas = {};
+    var matchDict = {};
+    matches.forEach(function (match) {
+        var match_id = matchId(match);
+        matchMetas[match_id] = match.createdAt;
+        matchDict[match_id] = match;
+    });
+    return event.data.adminRef.root.child("/matches/" + region).update(__assign({}, matchDict)).then(event.data.adminRef.root.child("/players/" + region + "/" + playerName + "/matches").update(__assign({}, matchMetas)));
 };
 // Executable Firebase Function
 exports.matchRequestConsumer = functions.database.ref('/apiQueue/{region}/{playerName}')
@@ -81,12 +86,13 @@ exports.matchRequestConsumer = functions.database.ref('/apiQueue/{region}/{playe
     console.log("[ApiConsumer] " + playerName + " " + region + " " + JSON.stringify(query, null, 2));
     var options = {
         uri: baseApiUrl + "/shards/" + region + "/matches",
-        qs: query,
-        headers: {
-            'Accept': 'application/vnd.api+json',
-            'X-TITLE-ID': 'semc-vainglory',
-            'Authorization': functions.config().api.key
+        qs: {
+            'filter[playerNames]': query['playerNames'],
+            'filter[createdAt-end]': query['createdAt-end'],
+            'filter[createdAt-start]': query['createdAt-start'],
+            sort: '-createdAt'
         },
+        headers: apiHeaders,
         json: true
     };
     request(options)
@@ -95,12 +101,9 @@ exports.matchRequestConsumer = functions.database.ref('/apiQueue/{region}/{playe
         var orderedFlatMatches = [];
         matches.data.forEach(function (match, index) { return orderedFlatMatches.push(new datatypes_1.FlatMatch(matches, index)); });
         orderedFlatMatches = orderedFlatMatches.sort(function (a, b) { return moment(b.createdAt).valueOf() - moment(a.createdAt).valueOf(); });
-        orderedFlatMatches.forEach(function (match) { return console.log(match); });
-        event.data.adminRef.set(null);
-        // addMatches(orderedFlatMatches, playerName, region, event);
+        addMatches(orderedFlatMatches, playerName, region, event).then(event.data.adminRef.root.child("playerQueue/" + region + "/" + playerName).set({ requestedAt: new Date().toISOString() }));
     })["catch"](function (err) {
-        // API call failed...
         console.log(err);
     });
-    // event.data.ref.set(null);
+    event.data.ref.set(null);
 });

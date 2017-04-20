@@ -1,2 +1,1 @@
-
-<div *ngIf="(match | async)">{{ fromTime((match | async).createdAt) }} - {{  (match | async)?.duration / 60 | number :'1.0-0' }}:{{  (match | async)?.duration % 60 | number : '2.0-0' }} {{  (match | async)?.gameMode }}</div>
+<div *ngIf="match">{{ fromTime(match.createdAt) }} - {{ playerWon ? 'Victory' : 'Defeat' }} {{  match?.duration / 60 | number :'1.0-0' }}:{{  match?.duration % 60 | number : '2.0-0' }} {{  match?.gameMode }}</div>

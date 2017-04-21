@@ -3,6 +3,7 @@
 # compiled output
 /dist
 /tmp
+*.js
 
 # dependencies
 /node_modules
@@ -27,6 +28,7 @@ testem.log
 /typings
 server.cert
 server.key
+firebase-debug.log
 
 
 # e2e

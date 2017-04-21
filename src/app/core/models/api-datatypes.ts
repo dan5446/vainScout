@@ -1,4 +1,4 @@
-import { VgNamesMap } from '../actors';
+import { VgNamesMap } from './actors';
 
 export class VgApiResponse {
     data: any;
@@ -20,23 +20,23 @@ export class VgApiResponse {
         return this;
     }
     public constructor(kwargs: {
-        data?: Array<VgDataType> | VgDataType,
+        data?: any,
         errors?: Array<any> | any,
         included?: Array<VgDataType>,
         links?: Array<any>,
     } = {}) {
-        if (Array.isArray(kwargs.data)) {
-            if (kwargs.data[0].type === 'match') {
-                this.data = kwargs.data.map(item =>
+        if (Array.isArray(kwargs['data'])) {
+            if (kwargs['data'][0].type === 'match') {
+                this.data = kwargs['data'].map(item =>
                     // tslint:disable-next-line:max-line-length
                     new Match(item)).sort((a, b) => new Date(b.attributes.createdAt).valueOf() - new Date(a.attributes.createdAt).valueOf());
             }
-            if (kwargs.data[0].type === 'player') { this.data = kwargs.data.map(item => new Player(item)); }
-        } else if (kwargs.data.type === 'match') {
-            this.data = new Match(kwargs.data);
-        } else if (kwargs.data.type === 'player') {
-            this.data = new Player(kwargs.data);
-        } else { this.data = null; }
+            if (kwargs['data'][0].type === 'player') { this.data = kwargs['data'].map(item => new Player(item)); }
+        } else if (kwargs['data'] && kwargs['data']['type'] === 'match') {
+            this.data = new Match(kwargs['data']);
+        } else if (kwargs['data'] &&  kwargs['data']['type'] === 'player') {
+            this.data = new Player(kwargs['data']);
+        } else { this.data = []; }
         this.errors = kwargs.errors || null;
         this.included = [];
         if (Array.isArray(kwargs.included)) {
@@ -113,11 +113,11 @@ export class VgDataArray {
     constructor(kwargs: {
         data?: Array<any>;
     } = {}) {
-        if (Array.isArray(kwargs.data)) {
+        if (Array.isArray(kwargs['data'])) {
             this.data = [];
-            kwargs.data.forEach(item => this.data.push(new VgDataType(item)));
-        } else if (kwargs.data) {
-            this.data = new VgDataType(kwargs.data);
+            kwargs['data'].forEach(item => this.data.push(new VgDataType(item)));
+        } else if (kwargs['data']) {
+            this.data = new VgDataType(kwargs['data']);
         }
     }
 }
@@ -295,8 +295,8 @@ export class ParticipantStats {
     skillTier: string;
     skinKey: string;
     turretCaptures: string;
-    wentAfk: boolean;
-    winner: boolean;
+    wentAfk: string;
+    winner: string;
     constructor(kwargs: {
         assists?: string,
         crystalMineCaptures?: string,
@@ -353,8 +353,8 @@ export class ParticipantStats {
         this.skillTier = kwargs.skillTier;
         this.skinKey = kwargs.skinKey;
         this.turretCaptures = kwargs.turretCaptures;
-        this.wentAfk = kwargs.wentAfk === 'true';
-        this.winner = kwargs.winner === 'true';
+        this.wentAfk = kwargs.wentAfk;
+        this.winner = kwargs.winner;
     }
 }
 
@@ -421,8 +421,8 @@ export class RosterParticipants {
         data?: Array<any>;
     } = {}) {
         this.data = [];
-        if (Array.isArray(kwargs.data)) {
-            kwargs.data.forEach(item => this.data.push(new VgDataType(item)));
+        if (Array.isArray(kwargs['data'])) {
+            kwargs['data'].forEach(item => this.data.push(new VgDataType(item)));
         }
     }
 }
@@ -447,8 +447,6 @@ export class Team {
 export class Telemetry {
     constructor() {}
 }
-
-
 
 /** Flattened Datatypes */
 export class FlatMatch {
@@ -489,6 +487,7 @@ export class FlatMatch {
             .filter(item => item.attributes.stats.side.includes(side))
             .pop();
     }
+
 }
 
 export class FlatRoster {
@@ -498,9 +497,9 @@ export class FlatRoster {
     krakenCaptures: string;
     turretKills: string;
     turretsRemaining: string;
-    participants: [FlatParticipant, FlatParticipant, FlatParticipant];
-    winner: boolean;
-    players: Array<any>;
+    participants: FlatParticipant[];
+    winner: string;
+    players: Array<FlatPlayer>;
     // team: FlatTeam; Todo: Implement when teams are implemented
     constructor(roster: Roster, included: Array<any>) {
         this.acesEarned = roster.attributes.stats.acesEarned;
@@ -512,21 +511,23 @@ export class FlatRoster {
         const participantIds = roster.relationships.participants.data.map(item => item.id);
         const participantList = this.findParticipants(participantIds, included);
         const players = included.filter(item => item.type === 'player');
-        this.participants = <[FlatParticipant, FlatParticipant, FlatParticipant]>participantList
+        this.participants = <FlatParticipant[]>participantList
             .map(participant => new FlatParticipant(participant, players));
-        this.winner = this.participants.length ? this.participants[0].winner : false;
-        this.players = this.participants.map(item => new Object({ id: item.playerId, name: item.playerName }) );
+        this.winner = this.participants.length ? this.participants[0]['winner'] : 'false';
+        this.players = this.participants.map(item => item.player);
     }
+
     private findParticipants(ids: Array<string>, included: Array<any>) {
         return included
             .filter(item => item.type === 'participant')
             .filter(participant => ids.indexOf(participant.id) >= 0);
     }
+
 }
 
 export class FlatParticipant {
     playerId: string;
-    playerName: string;
+    player: FlatPlayer;
     actor: string;
     assists: number;
     crystalMineCaptures: number;
@@ -547,8 +548,8 @@ export class FlatParticipant {
     skillTier: string;
     skinKey: string;
     turretCaptures: number;
-    wentAfk: boolean;
-    winner: boolean;
+    wentAfk: string;
+    winner: string;
     constructor(participant: Participant, players: Array<any>) {
         this.actor = participant.attributes.actor;
         this.assists = +participant.attributes.stats.assists;
@@ -573,35 +574,33 @@ export class FlatParticipant {
         this.wentAfk = participant.attributes.stats.wentAfk;
         this.winner = participant.attributes.stats.winner;
         this.playerId = participant.relationships.player.data.id;
-        this.playerName = players.filter(player => player.id === this.playerId).pop().attributes.name
+        this.player = new FlatPlayer(players.filter(player => player.id === this.playerId).pop());
     }
 }
 
 export class FlatPlayer {
     id: string;
     name: string;
-    shardId: string;
-    level: string;
-    lifetimeGold: string;
-    lossStreak: string ;
-    played: string;
-    played_ranked: string;
-    winStreak: string;
-    wins: string;
-    xp: string;
-    matches: Array<string>;
-    constructor(player: Player, matches: Array<Match> = null) {
+    region: string;
+    level: number;
+    lifetimeGold: number;
+    lossStreak: number;
+    played: number;
+    played_ranked: number;
+    winStreak: number;
+    wins: number;
+    xp: number;
+    constructor(player: Player) {
         this.id = player.id;
         this.name = player.attributes.name;
-        this.shardId = player.attributes.shardId;
-        this.level = player.attributes.stats.level;
-        this.lifetimeGold = player.attributes.stats.lifetimeGold;
-        this.lossStreak = player.attributes.stats.lossStreak;
-        this.played = player.attributes.stats.played;
-        this.played_ranked = player.attributes.stats.played_ranked;
-        this.winStreak = player.attributes.stats.winStreak;
-        this.wins = player.attributes.stats.wins;
-        this.xp = player.attributes.stats.xp;
-        this.matches = matches ? matches.map(item => item.id) : [];
+        this.region = player.attributes.shardId;
+        this.level = +player.attributes.stats.level;
+        this.lifetimeGold = +player.attributes.stats.lifetimeGold;
+        this.lossStreak = +player.attributes.stats.lossStreak;
+        this.played = +player.attributes.stats.played;
+        this.played_ranked = +player.attributes.stats.played_ranked;
+        this.winStreak = +player.attributes.stats.winStreak;
+        this.wins = +player.attributes.stats.wins;
+        this.xp = +player.attributes.stats.xp;
     }
 }

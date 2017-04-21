@@ -1,5 +1,5 @@
-import { VgNamesMap } from '../actors';
-import { ItemOccurence } from '../api/datatypes';
+import { VgNamesMap } from './actors';
+import { ItemOccurence } from './api-datatypes';
 
 export class FirebaseMatch {
     id: string;
@@ -12,8 +12,7 @@ export class FirebaseMatch {
     queue: string;
     leftRoster: FirebaseRoster;
     rightRoster: FirebaseRoster;
-    winner: 'left' | 'right';
-    players: Array<string>;
+    players: Array<{id: string, name: string}>;
     constructor(match: any) {
         // const match = response.data[matchIndex];
         this.id = match.id;
@@ -26,7 +25,14 @@ export class FirebaseMatch {
         this.queue = match.queue;
         this.leftRoster = new FirebaseRoster(match.leftRoster);
         this.rightRoster = new FirebaseRoster(match.rightRoster);
-        this.players = this.leftRoster.players.concat(this.rightRoster.players);
+        this.players = match.players;
+    }
+    findOutcomeFor(playerName: string) {
+        const inLeft = this.leftRoster.players.filter(player => player['name'] === playerName).length !== 0;
+        const inRight = this.rightRoster.players.filter(player => player['name'] === playerName).length !== 0;
+        const leftWon = this.leftRoster.winner;
+        const rightWon = this.rightRoster.winner;
+        return (inLeft && leftWon) || (inRight && rightWon);
     }
 }
 
@@ -39,7 +45,7 @@ export class FirebaseRoster {
     turretsRemaining: string;
     participants: [FirebaseParticipant, FirebaseParticipant, FirebaseParticipant];
     winner: boolean;
-    players: Array<string>;
+    players: Array<{id: string, name: string}>;
     // team: FlatTeam; Todo: Implement when teams are implemented
     constructor(roster: any) {
         this.acesEarned = roster.acesEarned;
@@ -48,9 +54,10 @@ export class FirebaseRoster {
         this.krakenCaptures = roster.krakenCaptures;
         this.turretKills = roster.turretKills;
         this.turretsRemaining = roster.turretsRemaining;
-        this.participants = roster.participants.map(item => new FirebaseParticipant(item));
+        this.participants = roster.participants && roster.participants.length ?
+            roster.participants.map(item => new FirebaseParticipant(item)) : [];
         this.winner = roster.winner;
-        this.players = roster.players;
+        this.players = roster.players || [];
     }
 }
 
@@ -114,10 +121,10 @@ export class FirebasePlayer {
     level: string;
     lifetimeGold: string;
     lossStreak: string ;
-    played: string;
+    played: number;
     played_ranked: string;
     winStreak: string;
-    wins: string;
+    wins: number;
     xp: string;
     constructor(player: any) {
         this.id = player.id;
@@ -126,10 +133,10 @@ export class FirebasePlayer {
         this.level = player.level;
         this.lifetimeGold = player.lifetimeGold;
         this.lossStreak = player.lossStreak;
-        this.played = player.played;
+        this.played = +player.played;
         this.played_ranked = player.played_ranked;
         this.winStreak = player.winStreak;
-        this.wins = player.wins;
+        this.wins = +player.wins;
         this.xp = player.xp;
     }
 }

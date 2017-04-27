@@ -9,6 +9,7 @@ import { AppComponent } from './app.component';
 import { LookupComponent } from './lookup/lookup.component';
 import { PlayerDetailComponent } from './player/player-detail.component';
 import { MatchDetailComponent } from './matches/match-detail.component';
+import { MessagingService } from './core/services/messaging.service';
 import { environment } from '../environments/environment';
 
 const configErrMsg = `You have not configured and imported the Firebase SDK.
@@ -50,4 +51,6 @@ const myFirebaseAuthConfig = {
     providers: [],
     bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule { 
+    constructor(ms: MessagingService) {}
+}

@@ -37,8 +37,19 @@ var addNextApiRequest = function (event, region, playerName) {
             'createdAt-end': moment(earliest).subtract(1, 'minutes').toISOString()
         };
         event.data.adminRef.root.child("/apiQueue/" + region + "/" + playerName).set(queries);
-        console.log('An api request has been set with the following queries: ', JSON.stringify(queries, null, 2));
+        console.log("An api request has been set for " + playerName + " : " + region + " from \n                " + queries['createdAt-start'] + " until " + queries['createdAt-end']);
     });
+    // notifications test
+    var payload = {
+        notification: {
+            title: 'You have a new follower!',
+            body: "blahis now following you."
+        }
+    };
+    // tslint:disable-next-line:max-line-length
+    var tokens = ['erR5jF19hik:APA91bFwAwBrOX5Qy0CWxPkFWRHpHqycKW1DtY80645MJe0Za_LjZ-_G60SsGVz7W9Rfi2eeFDVdv6NSRPxVwVA-arHMsvdp1mje0QK3OwZQCtqtEFqc-NB-_fjP97xTdAFSHopkEYhj'];
+    admin.messaging().sendToDevice(tokens, payload).then(function (response) { return console.log(response); });
+    // end notification test
     event.data.ref.set(null);
 };
 // Executable Firebase Function
@@ -54,7 +65,7 @@ functions.database.ref('/playerQueue/{region}/{playerName}')
     var payload = event.data.val();
     console.log('region: ', region, '\r\n,', 'playerName: ', playerName);
     if (payload === null) {
-        console.log('[PlayerQueue] delete event execution');
+        console.warn('[PlayerQueue] delete event execution');
         return 1;
     }
     addNextApiRequest(event, region, playerName);
@@ -80,7 +91,7 @@ exports.matchRequestConsumer = functions.database.ref('/apiQueue/{region}/{playe
     var playerName = event.params.playerName;
     var query = event.data.val();
     if (query === null) {
-        console.log('[ApiQueue] delete event execution');
+        console.warn('[ApiQueue] delete event execution');
         return 1;
     }
     console.log("[ApiConsumer] " + playerName + " " + region + " " + JSON.stringify(query, null, 2));
@@ -97,13 +108,13 @@ exports.matchRequestConsumer = functions.database.ref('/apiQueue/{region}/{playe
     };
     request(options)
         .then(function (matches) {
-        console.log("[ApiRequest] returned " + matches.data.length + " matches");
+        console.log("[ApiRequest] returned " + matches.data.length + " matches for " + playerName + " : " + region);
         var orderedFlatMatches = [];
         matches.data.forEach(function (match, index) { return orderedFlatMatches.push(new datatypes_1.FlatMatch(matches, index)); });
         orderedFlatMatches = orderedFlatMatches.sort(function (a, b) { return moment(b.createdAt).valueOf() - moment(a.createdAt).valueOf(); });
         addMatches(orderedFlatMatches, playerName, region, event).then(event.data.adminRef.root.child("playerQueue/" + region + "/" + playerName).set({ requestedAt: new Date().toISOString() }));
     })["catch"](function (err) {
-        console.log(err);
+        console.error(err);
     });
     event.data.ref.set(null);
 });

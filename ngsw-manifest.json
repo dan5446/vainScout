@@ -1,13 +1,7 @@
 {
-    "routing": {
-        "index": "/index.html",
-        "routes": {
-            "/": {
-                "prefix": false
-            },
-            "/player": {
-                "prefix": true
-            }
-        }
-    }
+    "push": {
+        "showNotifications": true,
+        "backgroundOnly": false
+    },
+    "gcm_sender_id": "794390759871"
 }

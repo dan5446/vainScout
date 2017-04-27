@@ -29,11 +29,28 @@ const addNextApiRequest = (event, region, playerName) => {
                 'playerNames': playerName,
                 'createdAt-start': earliestMatchTimeString,
                 'createdAt-end': moment(earliest).subtract(1, 'minutes').toISOString()
-            }
+            };
             event.data.adminRef.root.child(`/apiQueue/${region}/${playerName}`).set(queries);
             console.log(`An api request has been set for ${playerName} : ${region} from 
                 ${queries['createdAt-start']} until ${queries['createdAt-end']}`);
         });
+
+    // notifications test
+    const payload = {
+      notification: {
+        title: 'You have a new follower!',
+        body: `blahis now following you.`,
+      }
+    };
+
+    // tslint:disable-next-line:max-line-length
+    const tokens = ['erR5jF19hik:APA91bFwAwBrOX5Qy0CWxPkFWRHpHqycKW1DtY80645MJe0Za_LjZ-_G60SsGVz7W9Rfi2eeFDVdv6NSRPxVwVA-arHMsvdp1mje0QK3OwZQCtqtEFqc-NB-_fjP97xTdAFSHopkEYhj'];
+
+    admin.messaging().sendToDevice(tokens, payload).then(response => console.log(response));
+
+
+    // end notification test
+
     event.data.ref.set(null);
 };
 
@@ -43,18 +60,19 @@ export const matchRequestProducer =
     // the front-end has made a api call to fetch the player object and
     // a data call for the latest up to 50 matches. The database has been filled
     // with that data and after has entered a request on the playerQueue
-    functions.database.ref('/playerQueue/{region}/{playerName}')
+    functions.database
+        .ref('/playerQueue/{region}/{playerName}')
         // We async listen to additions to the playerQueue
         .onWrite(event => {
-            const region = event.params['region'];
-            const playerName = event.params['playerName'];
-            const payload = event.data.val();
-            console.log('region: ', region, '\r\n,', 'playerName: ', playerName);
-            if (payload === null) {
-                console.warn('[PlayerQueue] delete event execution');
-                return 1;
-            }
-            addNextApiRequest(event, region, playerName);
+          const region = event.params['region'];
+          const playerName = event.params['playerName'];
+          const payload = event.data.val();
+          console.log('region: ', region, '\r\n,', 'playerName: ', playerName);
+          if (payload === null) {
+            console.warn('[PlayerQueue] delete event execution');
+            return 1;
+          }
+          addNextApiRequest(event, region, playerName);
         });
 
 
@@ -79,27 +97,28 @@ const addMatches = (matches: FlatMatch[], playerName: string, region: string, ev
 export const matchRequestConsumer =
     functions.database.ref('/apiQueue/{region}/{playerName}')
         .onWrite(event => {
-            const region = event.params.region;
-            const playerName = event.params.playerName;
-            const query = event.data.val();
-            if (query === null) {
-                console.warn('[ApiQueue] delete event execution');
-                return 1;
-            }
-            console.log(`[ApiConsumer] ${playerName} ${region} ${JSON.stringify(query, null, 2)}`);
-            const options = {
-                uri: `${baseApiUrl}/shards/${region}/matches`,
-                qs: {
-                    'filter[playerNames]': query['playerNames'],
-                    'filter[createdAt-end]': query['createdAt-end'],
-                    'filter[createdAt-start]': query['createdAt-start'],
-                    sort: '-createdAt'
-                },
-                headers: apiHeaders,
-                json: true
-            };
-            request(options)
-                .then((matches) => {
+          const region = event.params.region;
+          const playerName = event.params.playerName;
+          const query = event.data.val();
+          if (query === null) {
+            console.warn('[ApiQueue] delete event execution');
+            return 1;
+          }
+          console.log(`[ApiConsumer] ${playerName} ${region} ${JSON.stringify(query, null, 2)}`);
+          const options = {
+            uri : `${baseApiUrl}/shards/${region}/matches`,
+            qs : {
+              'filter[playerNames]' : query['playerNames'],
+              'filter[createdAt-end]' : query['createdAt-end'],
+              'filter[createdAt-start]' : query['createdAt-start'],
+              sort : '-createdAt'
+            },
+            headers : apiHeaders,
+            json : true
+          };
+          request(options)
+              .then(
+                  (matches) => {
                     console.log(`[ApiRequest] returned ${matches.data.length} matches for ${playerName} : ${region}`);
                     let orderedFlatMatches = [];
                     matches.data.forEach((match, index) => orderedFlatMatches.push(new FlatMatch(matches, index)));
@@ -109,11 +128,7 @@ export const matchRequestConsumer =
                     addMatches(orderedFlatMatches, playerName, region, event).then(
                         event.data.adminRef.root.child(`playerQueue/${region}/${playerName}`).set({ requestedAt: new Date().toISOString() })
                     );
-                })
-                .catch(function (err) {
-                    console.error(err);
-                });
-                event.data.ref.set(null);
+                  })
+              .catch(function(err) { console.error(err); });
+          event.data.ref.set(null);
         });
-
-

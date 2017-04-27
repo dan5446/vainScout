@@ -11,7 +11,7 @@ import { PlayerEffects } from './store/effects';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { environment } from '../../environments/environment';
 
-import { FirebaseService, ApiService } from './services';
+import { FirebaseService, ApiService, MessagingService } from './services';
 
 @NgModule({
     imports: [
@@ -27,7 +27,8 @@ export class CoreModule {
             ngModule: CoreModule,
             providers: [
                 ApiService,
-                FirebaseService
+                FirebaseService,
+                MessagingService
             ]
         };
     }

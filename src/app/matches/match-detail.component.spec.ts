@@ -1,25 +1,22 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { MatchDetailComponent } from './match-detail.component';
+import {MatchDetailComponent} from './match-detail.component';
 
 describe('PlayerDetailComponent', () => {
-  let component: MatchDetailComponent;
-  let fixture: ComponentFixture<MatchDetailComponent>;
+    let component: MatchDetailComponent;
+    let fixture: ComponentFixture<MatchDetailComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ MatchDetailComponent ]
-    })
-    .compileComponents();
-  }));
+    beforeEach(async(() => {
+        TestBed.configureTestingModule({declarations: [MatchDetailComponent]}).compileComponents();
+    }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(MatchDetailComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(() => {
+        fixture = TestBed.createComponent(MatchDetailComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

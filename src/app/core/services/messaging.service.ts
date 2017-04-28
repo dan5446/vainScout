@@ -1,9 +1,8 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import * as firebase from 'firebase';
 
 @Injectable()
 export class MessagingService {
-
     private messaging: any;
 
     constructor() {
@@ -21,9 +20,9 @@ export class MessagingService {
                 console.log('Unable to get permission to notify.', err);
             });
 
-        this.messaging.onTokenRefresh(function () {
+        this.messaging.onTokenRefresh(function() {
             this.messaging.getToken()
-                .then(function (refreshedToken) {
+                .then(function(refreshedToken) {
                     console.log('Token refreshed.');
                     // Indicate that the new Instance ID token has not yet been sent to the
                     // app server.
@@ -32,35 +31,32 @@ export class MessagingService {
                     // sendTokenToServer(refreshedToken);
                     // ...
                 })
-                .catch(function (err) {
+                .catch(function(err) {
                     console.log('Unable to retrieve refreshed token ', err);
                     // showToken('Unable to retrieve refreshed token ', err);
                 });
         });
-
     }
 
     getToken() {
         return this.messaging.getToken()
-            .then(function (currentToken) {
+            .then(function(currentToken) {
                 if (currentToken) {
                     console.log(currentToken);
-                    //   sendTokenToServer(currentToken);
-                    //   updateUIForPushEnabled(currentToken);
+                    // sendTokenToServer(currentToken);
+                    // updateUIForPushEnabled(currentToken);
                 } else {
                     // Show permission request.
                     console.log('No Instance ID token available. Request permission to generate one.');
                     // Show permission UI.
-                    //   updateUIForPushPermissionRequired();
-                    //   setTokenSentToServer(false);
+                    // updateUIForPushPermissionRequired();
+                    // setTokenSentToServer(false);
                 }
             })
-            .catch(function (err) {
+            .catch(function(err) {
                 console.log('An error occurred while retrieving token. ', err);
                 // showToken('Error retrieving Instance ID token. ', err);
                 // setTokenSentToServer(false);
             });
     }
-
 }
-

@@ -1,11 +1,10 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
+import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
+import {Store} from '@ngrx/store';
+import {Observable} from 'rxjs/Observable';
 
-import { FlatMatch, FlatPlayer } from '../core/models';
-
-import { Store } from '@ngrx/store';
-import * as fromRoot from '../core/store/reducers';
+import {FlatMatch, FlatPlayer} from '../core/models';
 import * as Actions from '../core/store/actions';
+import * as fromRoot from '../core/store/reducers';
 
 
 @Component({
@@ -15,7 +14,6 @@ import * as Actions from '../core/store/actions';
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PlayerDetailComponent implements OnInit {
-
     player: Observable<Observable<FlatPlayer>>;
     page: Observable<number>;
     pageSize: Observable<number>;
@@ -32,13 +30,13 @@ export class PlayerDetailComponent implements OnInit {
         this.matchCount = store.select(fromRoot.selectMatchCount);
     }
 
-    ngOnInit() { }
+    ngOnInit() {}
 
     getRangeString(page, matchCount, pageSize, matches) {
         const matchesOnPage = matches.length;
         const firstIndex = (page * pageSize) + 1;
         const lastIndex = (page * pageSize) + matchesOnPage;
-        return `${ firstIndex } to ${ lastIndex } of ${ matchCount }`;
+        return `${firstIndex} to ${lastIndex} of ${matchCount}`;
     }
 
     lastPage(page, matchCount, pageSize, matches) {
@@ -53,5 +51,4 @@ export class PlayerDetailComponent implements OnInit {
     incrementPage(page: Observable<number>) {
         page.take(1).subscribe(num => this.store.dispatch(new Actions.GoToMatchPage(num + 1)));
     }
-
 }

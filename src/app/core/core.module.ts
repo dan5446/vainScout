@@ -1,17 +1,15 @@
-import { NgModule, Optional, SkipSelf } from '@angular/core';
+import {NgModule, Optional, SkipSelf} from '@angular/core';
+import {compose} from '@ngrx/core/compose';
+import {EffectsModule} from '@ngrx/effects';
+import {combineReducers, StoreModule} from '@ngrx/store';
+import {StoreDevtoolsModule} from '@ngrx/store-devtools';
+import {storeFreeze} from 'ngrx-store-freeze';
 
-import { StoreModule, combineReducers, } from '@ngrx/store';
-import { EffectsModule } from '@ngrx/effects';
-import { compose } from '@ngrx/core/compose';
-import { storeFreeze } from 'ngrx-store-freeze';
+import {environment} from '../../environments/environment';
 
-import { reducer } from './store/reducers';
-import { PlayerEffects } from './store/effects';
-
-import { StoreDevtoolsModule } from '@ngrx/store-devtools';
-import { environment } from '../../environments/environment';
-
-import { FirebaseService, ApiService, MessagingService } from './services';
+import {ApiService, FirebaseService, MessagingService} from './services';
+import {PlayerEffects} from './store/effects';
+import {reducer} from './store/reducers';
 
 @NgModule({
     imports: [
@@ -32,7 +30,7 @@ export class CoreModule {
             ]
         };
     }
-    constructor( @Optional() @SkipSelf() parentModule: CoreModule) {
+    constructor(@Optional() @SkipSelf() parentModule: CoreModule) {
         if (parentModule) {
             throw new Error('CoreModule is already loaded.Import it in the AppModule only');
         }

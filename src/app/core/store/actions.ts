@@ -1,7 +1,8 @@
-import { Action } from '@ngrx/store';
-import { FirebasePlayer, FlatPlayer, FlatMatch, VgApiResponse } from '../models';
-import { type } from '../util';
-import { Observable } from 'rxjs/observable';
+import {Action} from '@ngrx/store';
+import {Observable} from 'rxjs/observable';
+
+import {FirebasePlayer, FlatMatch, FlatPlayer, VgApiResponse} from '../models';
+import {type} from '../util';
 
 export const ActionTypes = {
     SEARCH_PLAYER: type('[VainScout] Search For Player'),
@@ -33,158 +34,136 @@ export const ActionTypes = {
 
 export class SearchPlayer implements Action {
     readonly type = ActionTypes.SEARCH_PLAYER;
-    constructor(public payload: { region: string, name: string }) { }
+    constructor(public payload: {region: string, name: string}) {}
 }
 
 export class SearchPlayerSuccess implements Action {
     readonly type = ActionTypes.SEARCH_PLAYER_SUCCESS;
-    constructor(public payload: true) { }
+    constructor(public payload: true) {}
 }
 
 export class SearchPlayerFail implements Action {
     readonly type = ActionTypes.SEARCH_PLAYER_FAIL;
-    constructor(public payload: false) { }
+    constructor(public payload: false) {}
 }
 
 export class LookupPlayerInFirebase implements Action {
     readonly type = ActionTypes.LOOKUP_PLAYER_DB;
-    constructor(public payload: { region: string, name: string }) { }
+    constructor(public payload: {region: string, name: string}) {}
 }
 
 export class LookupPlayerInFirebaseSuccess implements Action {
     readonly type = ActionTypes.LOOKUP_PLAYER_DB_SUCCESS;
-    constructor(public payload: FlatPlayer) { }
+    constructor(public payload: FlatPlayer) {}
 }
 
 export class LookupPlayerInFirebaseFail implements Action {
     readonly type = ActionTypes.LOOKUP_PLAYER_DB_FAIL;
-    constructor(public payload: { region: string, name: string }) { }
+    constructor(public payload: {region: string, name: string}) {}
 }
 
 export class LookupPlayerInApi implements Action {
     readonly type = ActionTypes.SEARCH_PLAYER_API;
-    constructor(public payload: { region: string, name: string }) { }
+    constructor(public payload: {region: string, name: string}) {}
 }
 
 export class LookupPlayerInApiSuccess implements Action {
     readonly type = ActionTypes.SEARCH_PLAYER_API_SUCCESS;
-    constructor(public payload: FlatPlayer) { }
+    constructor(public payload: FlatPlayer) {}
 }
 
 export class LookupPlayerInApiFail implements Action {
     readonly type = ActionTypes.SEARCH_PLAYER_API_FAIL;
-    constructor(public payload: false) { }
+    constructor(public payload: false) {}
 }
 
 export class LookupMatchesInApi implements Action {
     readonly type = ActionTypes.SEARCH_MATCHES_API;
-    constructor(public payload: { region: string, name: string }) { }
+    constructor(public payload: {region: string, name: string}) {}
 }
 
 export class LookupMatchesInApiSuccess implements Action {
     readonly type = ActionTypes.SEARCH_MATCHES_API_SUCCESS;
-    constructor(public payload: { response: VgApiResponse, player: FlatPlayer }) { }
+    constructor(public payload: {response: VgApiResponse, player: FlatPlayer}) {}
 }
 
 export class LookupMatchesInApiFail implements Action {
     readonly type = ActionTypes.SEARCH_MATCHES_API_FAIL;
-    constructor(public payload: false) { }
+    constructor(public payload: false) {}
 }
 
 export class HydrateMatches implements Action {
     readonly type = ActionTypes.HYDRATE_MATCHES;
-    constructor(public payload: { region: string, name: string }) { }
+    constructor(public payload: {region: string, name: string}) {}
 }
 
 export class HydrateMatchesDone implements Action {
     readonly type = ActionTypes.HYDRATE_MATCHES_DONE;
-    constructor(public payload: any) { }
+    constructor(public payload: any) {}
 }
 
 export class SendToRequestQueue implements Action {
     readonly type = ActionTypes.SEND_TO_REQUEST_QUEUE;
-    constructor(public payload: FlatPlayer) { }
+    constructor(public payload: FlatPlayer) {}
 }
 
 export class SendToRequestQueueDone implements Action {
     readonly type = ActionTypes.SEND_TO_REQUEST_QUEUE_DONE;
-    constructor(public payload: any) { }
+    constructor(public payload: any) {}
 }
 
 export class UpdateFirebaseObservables implements Action {
     readonly type = ActionTypes.UPDATE_FIREBASE_OBSERVABLES;
-    constructor(public payload: { region: string, name: string }) { }
+    constructor(public payload: {region: string, name: string}) {}
 }
 
 export class UpdateFirebaseObservablesDone implements Action {
     readonly type = ActionTypes.UPDATE_FIREBASE_OBSERVABLES_DONE;
-    constructor(public payload: true) { }
+    constructor(public payload: true) {}
 }
 
 export class UpdatePlayer implements Action {
     readonly type = ActionTypes.UPDATE_PLAYER;
-    constructor(public payload: { region: string, name: string }) { }
+    constructor(public payload: {region: string, name: string}) {}
 }
 
 export class UpdatePlayerDone implements Action {
     readonly type = ActionTypes.UPDATE_PLAYER_DONE;
-    constructor(public payload: Observable<FlatPlayer>) { }
+    constructor(public payload: Observable<FlatPlayer>) {}
 }
 
 export class UpdateMatches implements Action {
     readonly type = ActionTypes.UPDATE_MATCHES;
-    constructor(public payload: {name: string, region: string, page: number, limit: number}) { }
+    constructor(public payload: {name: string, region: string, page: number, limit: number}) {}
 }
 
 export class UpdateMatchesDone implements Action {
     readonly type = ActionTypes.UPDATE_MATCHES_DONE;
-    constructor(public payload: Observable<FlatMatch>[]) { }
+    constructor(public payload: Observable<FlatMatch>[]) {}
 }
 
 export class UpdateMatchCount implements Action {
     readonly type = ActionTypes.UPDATE_MATCH_COUNT;
-    constructor(public payload: {name: string, region: string, page: number, limit: number}) { }
+    constructor(public payload: {name: string, region: string, page: number, limit: number}) {}
 }
 
 export class UpdateMatchCountDone implements Action {
     readonly type = ActionTypes.UPDATE_MATCH_COUNT_DONE;
-    constructor(public payload: Observable<number>) { }
+    constructor(public payload: Observable<number>) {}
 }
 
 export class SearchLatestMatches implements Action {
     readonly type = ActionTypes.SEARCH_MATCHES_API;
-    constructor(public payload: {player: FlatPlayer, latest: string}) { }
+    constructor(public payload: {player: FlatPlayer, latest: string}) {}
 }
 
 export class GoToMatchPage implements Action {
     readonly type = ActionTypes.GO_TO_MATCH_PAGE;
-    constructor(public payload: number) { }
+    constructor(public payload: number) {}
 }
 
-export type Actions
-    =
-    | SearchPlayer
-    | SearchPlayerSuccess
-    | SearchPlayerFail
-    | LookupPlayerInFirebase
-    | LookupPlayerInFirebaseSuccess
-    | LookupPlayerInFirebaseFail
-    | LookupPlayerInApi
-    | LookupPlayerInApiSuccess
-    | LookupPlayerInApiFail
-    | LookupMatchesInApi
-    | LookupMatchesInApiSuccess
-    | LookupMatchesInApiFail
-    | HydrateMatches
-    | HydrateMatchesDone
-    | SendToRequestQueue
-    | SendToRequestQueueDone
-    | UpdateFirebaseObservables
-    | UpdateFirebaseObservablesDone
-    | UpdatePlayer
-    | UpdatePlayerDone
-    | UpdateMatches
-    | UpdateMatchesDone
-    | UpdateMatchCount
-    | UpdateMatchCountDone
-    | GoToMatchPage;
+export type Actions = | SearchPlayer | SearchPlayerSuccess | SearchPlayerFail | LookupPlayerInFirebase | LookupPlayerInFirebaseSuccess |
+    LookupPlayerInFirebaseFail | LookupPlayerInApi | LookupPlayerInApiSuccess | LookupPlayerInApiFail | LookupMatchesInApi |
+    LookupMatchesInApiSuccess | LookupMatchesInApiFail | HydrateMatches | HydrateMatchesDone | SendToRequestQueue | SendToRequestQueueDone |
+    UpdateFirebaseObservables | UpdateFirebaseObservablesDone | UpdatePlayer | UpdatePlayerDone | UpdateMatches | UpdateMatchesDone |
+    UpdateMatchCount | UpdateMatchCountDone | GoToMatchPage;

@@ -1,9 +1,8 @@
-import { Component, OnInit, Input, ChangeDetectionStrategy } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
-import * as moment from 'moment';
-import { FlatPlayer, FlatMatch, FirebaseMatch } from '../core/models';
+import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
+import {Store} from '@ngrx/store';
+import {Observable} from 'rxjs/Observable';
 
-import { Store } from '@ngrx/store';
+import {FirebaseMatch, FlatMatch, FlatPlayer} from '../core/models';
 import * as fromRoot from '../core/store/reducers';
 
 @Component({
@@ -13,7 +12,6 @@ import * as fromRoot from '../core/store/reducers';
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MatchDetailComponent implements OnInit {
-
     _match: FirebaseMatch;
     @Input()
     set match(match) {
@@ -29,7 +27,9 @@ export class MatchDetailComponent implements OnInit {
     ngOnInit() {}
 
     get playerWon() {
-        if (!this.player || !this.match) { return false; } else {
+        if (!this.player || !this.match) {
+            return false;
+        } else {
             return this.match.findOutcomeFor(this.player.name);
         }
     }

@@ -1,16 +1,17 @@
-import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { HttpModule } from '@angular/http';
-import { AngularFireModule, AuthProviders, AuthMethods } from 'angularfire2';
+import {NgModule} from '@angular/core';
+import {FormsModule} from '@angular/forms';
+import {HttpModule} from '@angular/http';
+import {BrowserModule} from '@angular/platform-browser';
+import {AngularFireModule, AuthMethods, AuthProviders} from 'angularfire2';
 
-import { CoreModule } from './core/core.module';
-import { AppComponent } from './app.component';
-import { LookupComponent } from './lookup/lookup.component';
-import { PlayerDetailComponent } from './player/player-detail.component';
-import { MatchDetailComponent } from './matches/match-detail.component';
-import { MessagingService } from './core/services/messaging.service';
-import { environment } from '../environments/environment';
+import {environment} from '../environments/environment';
+
+import {AppComponent} from './app.component';
+import {CoreModule} from './core/core.module';
+import {MessagingService} from './core/services/messaging.service';
+import {LookupComponent} from './lookup/lookup.component';
+import {MatchDetailComponent} from './matches/match-detail.component';
+import {PlayerDetailComponent} from './player/player-detail.component';
 
 const configErrMsg = `You have not configured and imported the Firebase SDK.
 Make sure you go through the codelab setup instructions.`;
@@ -51,6 +52,6 @@ const myFirebaseAuthConfig = {
     providers: [],
     bootstrap: [AppComponent]
 })
-export class AppModule { 
+export class AppModule {
     constructor(ms: MessagingService) {}
 }

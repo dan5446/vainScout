@@ -1,0 +1,6 @@
+BasedOnStyle: Google
+Language: JavaScript
+JavaScriptQuotes: Single
+JavaScriptWrapImports: false
+IndentWidth: 4
+ColumnLimit: 140

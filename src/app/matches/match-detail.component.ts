@@ -1,5 +1,6 @@
 import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
 import {Store} from '@ngrx/store';
+import * as moment from 'moment';
 import {Observable} from 'rxjs/Observable';
 
 import {FirebaseMatch, FlatMatch, FlatPlayer} from '../core/models';

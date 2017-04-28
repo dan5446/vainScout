@@ -38,7 +38,7 @@ export class ApiService {
         // console.log(uriString, queryString, requestString);
 
         return this.http.get(requestString, {headers: this.headers})
-            .map((res: Response) => new VgApiResponse(res.json()))
+            .map((res: Response) => res.json())
             .catch(err => Observable.of(new VgApiResponse({})));
         ;
     }

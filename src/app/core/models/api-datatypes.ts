@@ -1,8 +1,8 @@
-import { VgNamesMap } from './actors';
+import {VgNamesMap} from './actors';
 
 export class VgApiResponse {
     data: any;
-    errors: Array<any> | any;
+    errors: Array<any>|any;
     included: Array<VgDataType>;
     links: Array<any>;
     get playerCount() {
@@ -21,32 +21,46 @@ export class VgApiResponse {
     }
     public constructor(kwargs: {
         data?: any,
-        errors?: Array<any> | any,
+        errors?: Array<any>|any,
         included?: Array<VgDataType>,
         links?: Array<any>,
     } = {}) {
         if (Array.isArray(kwargs['data'])) {
             if (kwargs['data'][0].type === 'match') {
-                this.data = kwargs['data'].map(item =>
-                    // tslint:disable-next-line:max-line-length
-                    new Match(item)).sort((a, b) => new Date(b.attributes.createdAt).valueOf() - new Date(a.attributes.createdAt).valueOf());
+                this.data = kwargs['data']
+                                .map(
+                                    item =>
+                                        // tslint:disable-next-line:max-line-length
+                                    new Match(item))
+                                .sort((a, b) => new Date(b.attributes.createdAt).valueOf() - new Date(a.attributes.createdAt).valueOf());
             }
-            if (kwargs['data'][0].type === 'player') { this.data = kwargs['data'].map(item => new Player(item)); }
+            if (kwargs['data'][0].type === 'player') {
+                this.data = kwargs['data'].map(item => new Player(item));
+            }
         } else if (kwargs['data'] && kwargs['data']['type'] === 'match') {
             this.data = new Match(kwargs['data']);
-        } else if (kwargs['data'] &&  kwargs['data']['type'] === 'player') {
+        } else if (kwargs['data'] && kwargs['data']['type'] === 'player') {
             this.data = new Player(kwargs['data']);
-        } else { this.data = []; }
+        } else {
+            this.data = [];
+        }
         this.errors = kwargs.errors || null;
         this.included = [];
         if (Array.isArray(kwargs.included)) {
             kwargs.included.forEach(item => {
-                if (item.type === 'player') { this.included.push(new Player(item)); }
-                else if ( item.type === 'roster') { this.included.push(new Roster(item)); }
-                else if (item.type === 'participant') { this.included.push(new Participant(item)); }
-                else { this.included.push(item); }
+                if (item.type === 'player') {
+                    this.included.push(new Player(item));
+                } else if (item.type === 'roster') {
+                    this.included.push(new Roster(item));
+                } else if (item.type === 'participant') {
+                    this.included.push(new Participant(item));
+                } else {
+                    this.included.push(item);
+                }
             });
-        } else { this.included = null; }
+        } else {
+            this.included = null;
+        }
         this.links = kwargs.links || null;
     }
 }
@@ -54,7 +68,7 @@ export class VgApiResponse {
 export class VgDataType {
     id: string;
     type: string;
-    constructor(kwargs:{
+    constructor(kwargs: {
         id?: string,
         type?: string,
     } = {}) {
@@ -66,7 +80,7 @@ export class VgDataType {
 export class Player extends VgDataType {
     attributes: PlayerAttributes;
     relationships: VgRelationship;
-    constructor(kwargs:{
+    constructor(kwargs: {
         id?: string,
         type?: string,
         attributes?: any,
@@ -110,9 +124,7 @@ export class Roster extends VgDataType {
 
 export class VgDataArray {
     data: any;
-    constructor(kwargs: {
-        data?: Array<any>;
-    } = {}) {
+    constructor(kwargs: {data?: Array<any>;} = {}) {
         if (Array.isArray(kwargs['data'])) {
             this.data = [];
             kwargs['data'].forEach(item => this.data.push(new VgDataType(item)));
@@ -140,10 +152,7 @@ export class Participant extends VgDataType {
 export class VgAttributes {
     shardId: string;
     titleId: string;
-    constructor(kwargs: {
-        shardId?: string,
-        titleId?: string
-    } = {}) {
+    constructor(kwargs: {shardId?: string, titleId?: string} = {}) {
         this.shardId = kwargs.shardId;
         this.titleId = kwargs.titleId;
     }
@@ -169,7 +178,7 @@ export class MatchAttributes extends VgAttributes {
     shardId: string;
     stats: MatchStats;
     titleId: string;
-    constructor(kwargs:{
+    constructor(kwargs: {
         createdAt?: string,
         duration?: number,
         gameMode?: string,
@@ -193,12 +202,8 @@ export class PlayerAttributes {
     shardId: string;
     stats: PlayerStats;
     titleId: string;
-    constructor(kwargs:{
-        createdAt?: string;
-        name?: string,
-        shardId?: string,
-        stats?: PlayerStats,
-        titleId?: string,
+    constructor(kwargs: {
+        createdAt?: string; name?: string, shardId?: string, stats?: PlayerStats, titleId?: string,
     } = {}) {
         this.createdAt = kwargs.createdAt;
         this.name = kwargs.name;
@@ -210,7 +215,7 @@ export class PlayerAttributes {
 
 export class RosterAttributes {
     stats: RosterStats;
-    constructor(kwargs:{
+    constructor(kwargs: {
         stats?: any,
     } = {}) {
         this.stats = new RosterStats(kwargs.stats);
@@ -220,7 +225,7 @@ export class RosterAttributes {
 export class MatchStats {
     endGameReason: string;
     queue: string;
-    constructor(kwargs:{
+    constructor(kwargs: {
         endGameReason?: string,
         queue?: string,
     } = {}) {
@@ -232,13 +237,13 @@ export class MatchStats {
 export class PlayerStats {
     level: string;
     lifetimeGold: string;
-    lossStreak: string ;
+    lossStreak: string;
     played: string;
     played_ranked: string;
     winStreak: string;
     wins: string;
     xp: string;
-    constructor(kwargs:{
+    constructor(kwargs: {
         level?: string,
         lifetimeGold?: string,
         lossStreak?: string,
@@ -265,10 +270,7 @@ export class ItemOccurence {
     get displayName() {
         return VgNamesMap.get(this.itemName).name;
     }
-    constructor(kwargs: {
-        itemName?: any;
-        occurences?: any;
-    } = {}) {
+    constructor(kwargs: {itemName?: any; occurences?: any;} = {}) {
         this.itemName = kwargs.itemName;
         this.occurences = kwargs.occurences || 0;
     }
@@ -366,7 +368,7 @@ export class RosterStats {
     side: string;
     turretKills: string;
     turretsRemaining: string;
-    constructor(kwargs:{
+    constructor(kwargs: {
         acesEarned?: string,
         gold?: string,
         heroKills?: string,
@@ -390,12 +392,7 @@ export class VgRelationship {
     rosters: VgDataArray;
     rounds: VgDataArray;
     player: VgDataArray;
-    constructor(kwargs:{
-        assets?: any,
-        rosters?: any,
-        rounds?: any,
-        player?: any
-    } = {}) {
+    constructor(kwargs: {assets?: any, rosters?: any, rounds?: any, player?: any} = {}) {
         this.assets = new VgDataArray(kwargs.assets);
         this.rosters = new VgDataArray(kwargs.rosters);
         this.rounds = new VgDataArray(kwargs.rounds);
@@ -406,10 +403,7 @@ export class VgRelationship {
 export class RosterRelationship {
     participants: VgDataArray;
     team: VgDataArray;
-    constructor(kwargs: {
-        participants?: any;
-        team?: any;
-    } = {}) {
+    constructor(kwargs: {participants?: any; team?: any;} = {}) {
         this.participants = new VgDataArray(kwargs.participants);
         this.team = new VgDataArray(kwargs.team);
     }
@@ -417,9 +411,7 @@ export class RosterRelationship {
 
 export class RosterParticipants {
     data: Array<VgDataType>;
-    constructor(kwargs: {
-        data?: Array<any>;
-    } = {}) {
+    constructor(kwargs: {data?: Array<any>;} = {}) {
         this.data = [];
         if (Array.isArray(kwargs['data'])) {
             kwargs['data'].forEach(item => this.data.push(new VgDataType(item)));
@@ -430,10 +422,7 @@ export class RosterParticipants {
 export class RosterTeam {
     participants: RosterParticipants;
     team: RosterTeam;
-    constructor(kwargs:{
-        participants?: any;
-        team?: any;
-    } = {}) {
+    constructor(kwargs: {participants?: any; team?: any;} = {}) {
         this.participants = kwargs.participants;
         this.team = kwargs.team;
     }
@@ -460,7 +449,7 @@ export class FlatMatch {
     queue: string;
     leftRoster: FlatRoster;
     rightRoster: FlatRoster;
-    winner: 'left' | 'right';
+    winner: 'left'|'right';
     players: Array<any>;
     constructor(response: VgApiResponse, matchIndex: number) {
         const match = response.data[matchIndex];
@@ -480,14 +469,12 @@ export class FlatMatch {
         this.players = this.leftRoster.players.concat(this.rightRoster.players);
     }
 
-    private findRoster(side: 'left' | 'right', rosterIds: [string, string], included: Array<any>) {
-        return included
-            .filter(item => item.type === 'roster')
+    private findRoster(side: 'left'|'right', rosterIds: [string, string], included: Array<any>) {
+        return included.filter(item => item.type === 'roster')
             .filter(roster => rosterIds.indexOf(roster.id) >= 0)
             .filter(item => item.attributes.stats.side.includes(side))
             .pop();
     }
-
 }
 
 export class FlatRoster {
@@ -511,18 +498,14 @@ export class FlatRoster {
         const participantIds = roster.relationships.participants.data.map(item => item.id);
         const participantList = this.findParticipants(participantIds, included);
         const players = included.filter(item => item.type === 'player');
-        this.participants = <FlatParticipant[]>participantList
-            .map(participant => new FlatParticipant(participant, players));
+        this.participants = <FlatParticipant[]>participantList.map(participant => new FlatParticipant(participant, players));
         this.winner = this.participants.length ? this.participants[0]['winner'] : 'false';
         this.players = this.participants.map(item => item.player);
     }
 
     private findParticipants(ids: Array<string>, included: Array<any>) {
-        return included
-            .filter(item => item.type === 'participant')
-            .filter(participant => ids.indexOf(participant.id) >= 0);
+        return included.filter(item => item.type === 'participant').filter(participant => ids.indexOf(participant.id) >= 0);
     }
-
 }
 
 export class FlatParticipant {
